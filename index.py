@@ -5,7 +5,7 @@ import sys
 import pandas as pd
 import streamlit as st
 # let's import sentence transformer
-import sentence_transformers
+#import sentence_transformers
 import torch
 #######################################
 
