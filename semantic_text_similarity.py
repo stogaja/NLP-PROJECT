@@ -7,8 +7,8 @@ Original file is located at
     https://colab.research.google.com/github/Mwadz/Sematic-Text-Similarity/blob/main/Semantic_text_Similarity.ipynb
 """
 
-! pip install datasets
-! pip install sentence_transformers
+#! pip install datasets
+#! pip install sentence_transformers
 
 #loading training set
 import pandas as pd
@@ -94,7 +94,7 @@ import pickle
 filename = 'XpathFinder1.sav'
 pickle.dump(XpathFinder, open(filename, 'wb'))
 
-!pip install -q streamlit
+#!pip install -q streamlit
 
 # Commented out IPython magic to ensure Python compatibility.
 # %%writefile app.py
@@ -167,12 +167,12 @@ with stats_container:
         # let's show the result
         st.write(result)
 
-!pip install pyngrok
+#!pip install pyngrok
 
 from pyngrok import ngrok
 
 ngrok.set_auth_token("2EolZMbfSIIvEtovVRdA5Gi7KJY_3AKjE4jHU5udEjXfT6noE")
 
-!nohup streamlit run app.py --server.port 80 &
+nohup streamlit run app.py --server.port 80 &
 url = ngrok.connect(port = '80')
 print(url)
