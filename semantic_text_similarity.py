@@ -173,6 +173,6 @@ from pyngrok import ngrok
 
 ngrok.set_auth_token("2EolZMbfSIIvEtovVRdA5Gi7KJY_3AKjE4jHU5udEjXfT6noE")
 
-nohup streamlit run app.py --server.port 80 &
+#nohup streamlit run app.py --server.port 80 &
 url = ngrok.connect(port = '80')
 print(url)
