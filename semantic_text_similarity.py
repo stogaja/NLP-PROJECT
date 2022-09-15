@@ -99,14 +99,14 @@ pickle.dump(XpathFinder, open(filename, 'wb'))
 # Commented out IPython magic to ensure Python compatibility.
 # %%writefile app.py
 import io
- import netrc
- import pickle
- import sys
- import pandas as pd
- import streamlit as st
+import netrc
+import pickle
+import sys
+import pandas as pd
+import streamlit as st
 #  let's import sentence transformer
 # import sentence_transformers
- import torch
+import torch
 # #######################################
 
 st.markdown(
