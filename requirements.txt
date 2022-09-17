@@ -3,6 +3,7 @@ datasets
 sentence-transformers
 pandas
 numpy
+spacy
 tqdm
 sklearn
 streamlit
