@@ -1,6 +1,6 @@
 # let's import the libraries we need
-from sentence-transformers import SentenceTransformer
-from sentence-transformers import CrossEncoder
+from sentence_transformers import SentenceTransformer
+from sentence_transformers import CrossEncoder
 import spacy
 from sklearn.metrics.pairwise import cosine_similarity
 from datasets import load_dataset
@@ -91,7 +91,7 @@ with mod_container:
         # let's get the result
         simscore = loaded_model.predict([prompt])
 
-        from sentence-transformers import CrossEncoder
+        from sentence_transformers import CrossEncoder
         loaded_model = CrossEncoder("cross-encoder/stsb-roberta-base")
         sentence_pairs = []
         for sentence1, sentence2 in zip(data['sentence1'], data['sentence2']):
