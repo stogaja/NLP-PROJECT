@@ -1,4 +1,5 @@
 # let's import the libraries we need
+from sentence_transformers import SentenceTransformer
 from sentence_transformers import CrossEncoder
 import spacy
 from sklearn.metrics.pairwise import cosine_similarity
@@ -10,7 +11,6 @@ import sys
 import pandas as pd
 import numpy as np
 import streamlit as st
-import sentence_transformers
 import torch
 from tqdm import tqdm
 tqdm.pandas()
@@ -89,7 +89,7 @@ with mod_container:
     # let's pass the input to the loaded_model with torch compiled with cuda
     if prompt:
         # let's get the result
-        simscore = PathFinder.predict([prompt])
+        simscore = loaded_model.predict([prompt])
 
         from sentence_transformers import CrossEncoder
         loaded_model = CrossEncoder("cross-encoder/stsb-roberta-base")
