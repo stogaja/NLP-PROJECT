@@ -1,4 +1,8 @@
-from importlib.machinery import PathFinder
+# let's import the libraries we need
+from sentence_transformers import CrossEncoder
+import spacy
+from sklearn.metrics.pairwise import cosine_similarity
+from datasets import load_dataset
 import io
 import netrc
 import pickle
@@ -6,34 +10,54 @@ import sys
 import pandas as pd
 import numpy as np
 import streamlit as st
-# let's import sentence transformer
 import sentence_transformers
 import torch
-#######################################
+from tqdm import tqdm
+tqdm.pandas()
 
-st.markdown(
-    f"""
-<style>
-    .reportview-container .main .block-container{{
-        max-width: 90%;
-        padding-top: 5rem;
-        padding-right: 5rem;
-        padding-left: 5rem;
-        padding-bottom: 5rem;
-    }}
-    img{{
-    	max-width:40%;
-    	margin-bottom:40px;
-    }}
-</style>
-""",
-    unsafe_allow_html=True,
-)
+# Load the English STSB dataset
+stsb_dataset = load_dataset('stsb_multi_mt', 'en')
+stsb_train = pd.DataFrame(stsb_dataset['train'])
+stsb_test = pd.DataFrame(stsb_dataset['test'])
 
-# # let's load the saved model
-loaded_model = pickle.load(open(
-    'https://drive.google.com/file/d/1CUGbhyT8M4wU_y6FDYS5LBngcgORjGej/view?usp=sharing', 'rb'))
+# let's create helper functions
+nlp = spacy.load("en_core_web_sm")
 
+
+def text_processing(sentence):
+    sentence = [token.lemma_.lower()
+                for token in nlp(sentence)
+                if token.is_alpha and not token.is_stop]
+    return sentence
+
+
+def cos_sim(sentence1_emb, sentence2_emb):
+    cos_sim = cosine_similarity(sentence1_emb, sentence2_emb)
+    return np.diag(cos_sim)
+
+
+# let's read the csv file
+data = (pd.read_csv("/SBERT_data.csv")).drop(['Unnamed: 0'], axis=1)
+
+prompt = "charles"
+data['prompt'] = prompt
+data.rename(columns={'target_text': 'sentence2',
+            'prompt': 'sentence1'}, inplace=True)
+data['sentence2'] = data['sentence2'].astype('str')
+data['sentence1'] = data['sentence1'].astype('str')
+
+XpathFinder = CrossEncoder("cross-encoder/stsb-roberta-base")
+sentence_pairs = []
+for sentence1, sentence2 in zip(data['sentence1'], data['sentence2']):
+    sentence_pairs.append([sentence1, sentence2])
+
+data['SBERT CrossEncoder_Score'] = XpathFinder.predict(
+    sentence_pairs, show_progress_bar=True)
+
+# sorting the values
+data.sort_values(by=['SBERT CrossEncoder_Score'], ascending=False)
+
+loaded_model = XpathFinder
 
 # Containers
 header_container = st.container()
