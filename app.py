@@ -1,3 +1,4 @@
+from importlib.machinery import PathFinder
 import io
 import netrc
 import pickle
@@ -30,12 +31,8 @@ st.markdown(
 )
 
 # # let's load the saved model
-loaded_model = pickle.load(open('XpathFinder1.sav', 'rb'))
-#loaded_model = pickle.load('XpathFinder1.sav', map_location='cpu')
-
-
-
-#loaded_model = CPU_Unpickler(open('XpathFinder1.sav', 'rb')).load()
+loaded_model = pickle.load(open(
+    'https://drive.google.com/file/d/1CUGbhyT8M4wU_y6FDYS5LBngcgORjGej/view?usp=sharing', 'rb'))
 
 
 # Containers
@@ -51,32 +48,35 @@ with header_container:
 
 # model container
 with mod_container:
+
     # collecting input from user
     prompt = st.text_input("Enter your description below ...")
 
     # Loading e data
-    data = (pd.read_csv("/content/SBERT_data.csv")).drop(['Unnamed: 0'], axis = 1)
+    data = (pd.read_csv("/content/SBERT_data.csv")
+            ).drop(['Unnamed: 0'], axis=1)
 
-    data['prompt']= prompt
-    data.rename(columns = {'target_text':'sentence2', 'prompt':'sentence1'}, inplace = True)
+    data['prompt'] = prompt
+    data.rename(columns={'target_text': 'sentence2',
+                'prompt': 'sentence1'}, inplace=True)
     data['sentence2'] = data['sentence2'].astype('str')
-    data['sentence1']  = data['sentence1'].astype('str')
+    data['sentence1'] = data['sentence1'].astype('str')
 
     # let's pass the input to the loaded_model with torch compiled with cuda
     if prompt:
         # let's get the result
-        simscore = XpathFinder.predict([prompt])
+        simscore = PathFinder.predict([prompt])
+
         from sentence_transformers import CrossEncoder
-        XpathFinder = CrossEncoder("cross-encoder/stsb-roberta-base")
+        loaded_model = CrossEncoder("cross-encoder/stsb-roberta-base")
         sentence_pairs = []
-        for sentence1, sentence2 in zip(data['sentence1'],data['sentence2']):
-          sentence_pairs.append([sentence1, sentence2])
-        
+        for sentence1, sentence2 in zip(data['sentence1'], data['sentence2']):
+            sentence_pairs.append([sentence1, sentence2])
+
         # sorting the df to get highest scoring xpath_container
-        data['SBERT CrossEncoder_Score'] = XpathFinder.predict(sentence_pairs)
+        data['SBERT CrossEncoder_Score'] = loaded_model.predict(sentence_pairs)
         most_acc = data.head(5)
         # predictions
         st.write("Highest Similarity score: ", simscore)
         st.text("Is this one of these the Xpath you're looking for?")
-        st.write(st.write(most_acc["input_text"])) 
-        
+        st.write(st.write(most_acc["input_text"]))
