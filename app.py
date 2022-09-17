@@ -1,6 +1,6 @@
 # let's import the libraries we need
-from sentence_transformers import SentenceTransformer
-from sentence_transformers import CrossEncoder
+#from sentence_transformers import SentenceTransformer
+#from sentence_transformers import CrossEncoder
 import spacy
 from sklearn.metrics.pairwise import cosine_similarity
 from datasets import load_dataset
