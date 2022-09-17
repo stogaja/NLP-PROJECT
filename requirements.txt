@@ -1,6 +1,6 @@
 pip
 datasets
-sentence_transformers
+sentence-transformers
 pandas
 numpy
 tqdm
