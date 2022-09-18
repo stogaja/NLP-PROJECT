@@ -1,8 +1,7 @@
 # let's import the libraries
-#from sentence_transformers import util
-from sentence_transformers import CrossEncoder
-from sentence_transformers import SentenceTransformer
-import sentence_transformers
+from sentence-transformers import util
+from sentence-transformers import CrossEncoder
+from sentence-transformers import SentenceTransformer
 import time
 import sys
 import os
