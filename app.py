@@ -1,17 +1,23 @@
-# let's import the libraries we need
-#from sentence_transformers import SentenceTransformer
-#from sentence_transformers import CrossEncoder
+# let's import the libraries
+from sentence_transformers import util
+from sentence_transformers import CrossEncoder
+from sentence_transformers import SentenceTransformer
+import sentence_transformers
+import time
+import sys
+import os
+import torch
+import en_core_web_sm
+from email import header
+import streamlit as st
+import pandas as pd
+import numpy as np
+import pickle
 import spacy
 from sklearn.metrics.pairwise import cosine_similarity
 from datasets import load_dataset
 import io
 import netrc
-import pickle
-import sys
-import pandas as pd
-import numpy as np
-import streamlit as st
-import torch
 from tqdm import tqdm
 tqdm.pandas()
 
@@ -37,7 +43,7 @@ def cos_sim(sentence1_emb, sentence2_emb):
 
 
 # let's read the csv file
-data = (pd.read_csv("/SBERT_data.csv")).drop(['Unnamed: 0'], axis=1)
+data = (pd.read_csv("SBERT_data.csv")).drop(['Unnamed: 0'], axis=1)
 
 prompt = "charles"
 data['prompt'] = prompt
@@ -77,7 +83,7 @@ with mod_container:
     prompt = st.text_input("Enter your description below ...")
 
     # Loading e data
-    data = (pd.read_csv("/content/SBERT_data.csv")
+    data = (pd.read_csv("SBERT_data.csv")
             ).drop(['Unnamed: 0'], axis=1)
 
     data['prompt'] = prompt
