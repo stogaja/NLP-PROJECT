@@ -1,5 +1,5 @@
 # let's import the libraries
-from sentence_transformers import util
+#from sentence_transformers import util
 from sentence_transformers import CrossEncoder
 from sentence_transformers import SentenceTransformer
 import sentence_transformers
