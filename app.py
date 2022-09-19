@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 # let's import sentence transformer
-import sentence_transformers
+# import sentence_transformers
 import torch
 #######################################
 
