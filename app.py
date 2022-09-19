@@ -30,8 +30,8 @@ st.markdown(
 )
 
 # # let's load the saved model
-loaded_model = pickle.load(open('XpathFinder1.sav', 'rb'))
-#loaded_model = pickle.load('XpathFinder1.sav', map_location='cpu')
+# loaded_model = pickle.load(open('XpathFinder1.sav', 'rb'))
+# loaded_model = pickle.load('XpathFinder1.sav', map_location='cpu')
 
 
 #class CPU_Unpickler(pickle.Unpickler):
