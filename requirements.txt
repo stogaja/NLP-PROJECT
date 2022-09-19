@@ -1,10 +1,9 @@
 pip == 22.2.2
 datasets
-sentence-transformers
+sentence_transformers
 pandas
 numpy
-tqdm ==4.64.1
 sklearn
 streamlit
-spacy>=1.12.2
-https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0.tar.gz#egg=en_core_web_sm
+pyngrok
+spacy
