@@ -1,68 +1,49 @@
-# let's import the libraries
-from sentence_transformers import util
-from sentence_transformers import CrossEncoder
-from sentence_transformers import SentenceTransformer
-import time
-import sys
-import os
-import torch
-import en_core_web_sm
-from email import header
-import streamlit as st
-import pandas as pd
-import numpy as np
-import pickle
-import spacy
-from sklearn.metrics.pairwise import cosine_similarity
-from datasets import load_dataset
 import io
 import netrc
-from tqdm import tqdm
-tqdm.pandas()
+import pickle
+import sys
+import pandas as pd
+import numpy as np
+import streamlit as st
+# let's import sentence transformer
+import sentence_transformers
+import torch
+#######################################
 
-# Load the English STSB dataset
-stsb_dataset = load_dataset('stsb_multi_mt', 'en')
-stsb_train = pd.DataFrame(stsb_dataset['train'])
-stsb_test = pd.DataFrame(stsb_dataset['test'])
+st.markdown(
+    f"""
+<style>
+    .reportview-container .main .block-container{{
+        max-width: 90%;
+        padding-top: 5rem;
+        padding-right: 5rem;
+        padding-left: 5rem;
+        padding-bottom: 5rem;
+    }}
+    img{{
+    	max-width:40%;
+    	margin-bottom:40px;
+    }}
+</style>
+""",
+    unsafe_allow_html=True,
+)
 
-# let's create helper functions
-nlp = spacy.load("en_core_web_sm")
+# # let's load the saved model
+loaded_model = pickle.load(open('XpathFinder1.sav', 'rb'))
+#loaded_model = pickle.load('XpathFinder1.sav', map_location='cpu')
 
 
-def text_processing(sentence):
-    sentence = [token.lemma_.lower()
-                for token in nlp(sentence)
-                if token.is_alpha and not token.is_stop]
-    return sentence
+#class CPU_Unpickler(pickle.Unpickler):
+#    def find_class(self, module, name):
+#        if module == 'torch.storage' and name == '_load_from_bytes':
+#            return lambda b: torch.load(io.BytesIO(b), map_location='cpu')
+#        else:
+#            return super().find_class(module, name)
+#
 
+#loaded_model = CPU_Unpickler(open('XpathFinder1.sav', 'rb')).load()
 
-def cos_sim(sentence1_emb, sentence2_emb):
-    cos_sim = cosine_similarity(sentence1_emb, sentence2_emb)
-    return np.diag(cos_sim)
-
-
-# let's read the csv file
-data = (pd.read_csv("SBERT_data.csv")).drop(['Unnamed: 0'], axis=1)
-
-prompt = "charles"
-data['prompt'] = prompt
-data.rename(columns={'target_text': 'sentence2',
-            'prompt': 'sentence1'}, inplace=True)
-data['sentence2'] = data['sentence2'].astype('str')
-data['sentence1'] = data['sentence1'].astype('str')
-
-XpathFinder = CrossEncoder("cross-encoder/stsb-roberta-base")
-sentence_pairs = []
-for sentence1, sentence2 in zip(data['sentence1'], data['sentence2']):
-    sentence_pairs.append([sentence1, sentence2])
-
-data['SBERT CrossEncoder_Score'] = XpathFinder.predict(
-    sentence_pairs, show_progress_bar=True)
-
-# sorting the values
-data.sort_values(by=['SBERT CrossEncoder_Score'], ascending=False)
-
-loaded_model = XpathFinder
 
 # Containers
 header_container = st.container()
@@ -77,33 +58,29 @@ with header_container:
 
 # model container
 with mod_container:
-
     # collecting input from user
     prompt = st.text_input("Enter your description below ...")
 
     # Loading e data
-    data = (pd.read_csv("SBERT_data.csv")
-            ).drop(['Unnamed: 0'], axis=1)
+    data = (pd.read_csv("/content/SBERT_data.csv")).drop(['Unnamed: 0'], axis = 1)
 
-    data['prompt'] = prompt
-    data.rename(columns={'target_text': 'sentence2',
-                'prompt': 'sentence1'}, inplace=True)
+    data['prompt']= prompt
+    data.rename(columns = {'target_text':'sentence2', 'prompt':'sentence1'}, inplace = True)
     data['sentence2'] = data['sentence2'].astype('str')
-    data['sentence1'] = data['sentence1'].astype('str')
+    data['sentence1']  = data['sentence1'].astype('str')
 
     # let's pass the input to the loaded_model with torch compiled with cuda
     if prompt:
         # let's get the result
-        simscore = loaded_model.predict([prompt])
-
         from sentence_transformers import CrossEncoder
-        loaded_model = CrossEncoder("cross-encoder/stsb-roberta-base")
+        XpathFinder = CrossEncoder("cross-encoder/stsb-roberta-base")
         sentence_pairs = []
-        for sentence1, sentence2 in zip(data['sentence1'], data['sentence2']):
-            sentence_pairs.append([sentence1, sentence2])
-
-        # sorting the df to get highest scoring xpath_container
-        data['SBERT CrossEncoder_Score'] = loaded_model.predict(sentence_pairs)
+        for sentence1, sentence2 in zip(data['sentence1'],data['sentence2']):
+          sentence_pairs.append([sentence1, sentence2])
+        simscore = XpathFinder.predict([prompt])
+  
+       # sorting the df to get highest scoring xpath_container
+        data['SBERT CrossEncoder_Score'] = XpathFinder.predict(sentence_pairs)
         most_acc = data.head(5)
         # predictions
         st.write("Highest Similarity score: ", simscore)
