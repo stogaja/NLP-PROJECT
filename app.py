@@ -62,7 +62,7 @@ with mod_container:
     prompt = st.text_input("Enter your description below ...")
 
     # Loading e data
-    data = (pd.read_csv("/content/SBERT_data.csv")).drop(['Unnamed: 0'], axis = 1)
+    data = (pd.read_csv("SBERT_data.csv")).drop(['Unnamed: 0'], axis = 1)
 
     data['prompt']= prompt
     data.rename(columns = {'target_text':'sentence2', 'prompt':'sentence1'}, inplace = True)
