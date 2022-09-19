@@ -7,7 +7,7 @@ import numpy as np
 import streamlit as st
 # let's import sentence transformer
 # import sentence_transformers
-import torch
+# import torch
 #######################################
 
 st.markdown(
