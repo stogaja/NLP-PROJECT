@@ -5,7 +5,7 @@ import sys
 import pandas as pd
 import numpy as np
 import streamlit as st
-from sentence_transformers import SentenceTransformer
+# from sentence_transformers import SentenceTransformer
 # import sentence_transformers
 # import torch
 #######################################
