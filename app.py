@@ -5,7 +5,7 @@ import sys
 import pandas as pd
 import numpy as np
 import streamlit as st
-# let's import sentence transformer
+from sentence_transformers import SentenceTransformer
 # import sentence_transformers
 # import torch
 #######################################
@@ -34,7 +34,7 @@ st.markdown(
 # loaded_model = pickle.load('XpathFinder1.sav', map_location='cpu')
 
 
-#class CPU_Unpickler(pickle.Unpickler):
+# class CPU_Unpickler(pickle.Unpickler):
 #    def find_class(self, module, name):
 #        if module == 'torch.storage' and name == '_load_from_bytes':
 #            return lambda b: torch.load(io.BytesIO(b), map_location='cpu')
@@ -62,23 +62,24 @@ with mod_container:
     prompt = st.text_input("Enter your description below ...")
 
     # Loading e data
-    data = (pd.read_csv("SBERT_data.csv")).drop(['Unnamed: 0'], axis = 1)
+    data = (pd.read_csv("SBERT_data.csv")).drop(['Unnamed: 0'], axis=1)
 
-    data['prompt']= prompt
-    data.rename(columns = {'target_text':'sentence2', 'prompt':'sentence1'}, inplace = True)
+    data['prompt'] = prompt
+    data.rename(columns={'target_text': 'sentence2',
+                'prompt': 'sentence1'}, inplace=True)
     data['sentence2'] = data['sentence2'].astype('str')
-    data['sentence1']  = data['sentence1'].astype('str')
+    data['sentence1'] = data['sentence1'].astype('str')
 
     # let's pass the input to the loaded_model with torch compiled with cuda
     if prompt:
         # let's get the result
-        from sentence_transformers import CrossEncoder
+        from sentence_transformers.cross_encoder import CrossEncoder
         XpathFinder = CrossEncoder("cross-encoder/stsb-roberta-base")
         sentence_pairs = []
-        for sentence1, sentence2 in zip(data['sentence1'],data['sentence2']):
-          sentence_pairs.append([sentence1, sentence2])
+        for sentence1, sentence2 in zip(data['sentence1'], data['sentence2']):
+            sentence_pairs.append([sentence1, sentence2])
         simscore = XpathFinder.predict([prompt])
-  
+
        # sorting the df to get highest scoring xpath_container
         data['SBERT CrossEncoder_Score'] = XpathFinder.predict(sentence_pairs)
         most_acc = data.head(5)
