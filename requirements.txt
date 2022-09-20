@@ -1,7 +1,7 @@
 #pip == 22.2.2
 #python == 3.9.13
 #datasets
-sentence_transformers
+#sentence_transformers
 pandas
 numpy
 #tqdm ==4.64.1
@@ -10,3 +10,15 @@ streamlit
 #spacy>=1.12.2
 cross_encoder
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0.tar.gz#egg=en_core_web_sm
+
+transformers>=4.6.0,<5.0.0
+tokenizers>=0.10.3
+tqdm
+torch>=1.6.0
+torchvision
+numpy
+scikit-learn
+scipy
+nltk
+sentencepiece
+huggingface-hub
