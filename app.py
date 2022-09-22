@@ -73,7 +73,7 @@ with mod_container:
     # let's pass the input to the loaded_model with torch compiled with cuda
     if prompt:
         # let's get the result
-        from sentence_transformers.cross_encoder import CrossEncoder
+        import CrossEncoder
         XpathFinder = CrossEncoder("cross-encoder/stsb-roberta-base")
         sentence_pairs = []
         for sentence1, sentence2 in zip(data['sentence1'], data['sentence2']):
